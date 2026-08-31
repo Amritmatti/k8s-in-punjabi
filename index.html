@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kubernetes in Punjabi</title>
+<style>
+body{font-family:Arial,sans-serif;line-height:1.7;margin:0;background:#f5f7fb;color:#172033}header{background:#326ce5;color:white;padding:42px 20px;text-align:center}main{max-width:1000px;margin:30px auto;padding:0 20px}.card{background:white;padding:24px;margin:16px 0;border-radius:12px;box-shadow:0 2px 10px #0001}code,pre{background:#111827;color:#e5e7eb;padding:12px;border-radius:8px;display:block;overflow:auto}.tag{display:inline-block;background:#e8efff;color:#2453b8;padding:4px 10px;border-radius:20px;margin:3px}h2{color:#2453b8}footer{text-align:center;padding:30px;color:#667085}
+</style>
+</head>
+<body>
+<header><h1>☸ Kubernetes in Punjabi</h1><p>Zero ਤੋਂ Kubernetes ਸਿੱਖੋ — ਸੌਖੀ Punjabi + Practical Examples</p></header>
+<main>
+<div class="card"><h2>🚀 Kubernetes ਕੀ ਹੈ?</h2><p>Kubernetes ਇੱਕ open-source container orchestration platform ਹੈ। ਇਹ containers ਨੂੰ deploy, scale, network ਅਤੇ manage ਕਰਨ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।</p><p>ਸੌਖੀ example: ਜੇ ਤੁਹਾਡੇ ਕੋਲ 100 application containers ਹਨ, Kubernetes ਉਹਨਾਂ ਨੂੰ ਚਲਾਉਣ, restart ਕਰਨ ਅਤੇ traffic distribute ਕਰਨ ਦਾ ਕੰਮ automate ਕਰ ਸਕਦਾ ਹੈ।</p></div>
+<div class="card"><h2>🏗️ Cluster ਦੇ ਮੁੱਖ ਹਿੱਸੇ</h2><span class="tag">Control Plane</span><span class="tag">Worker Node</span><span class="tag">Pod</span><span class="tag">Service</span><span class="tag">Deployment</span><p><b>Control Plane:</b> cluster ਨੂੰ control ਕਰਦਾ ਹੈ। ਇਸ ਵਿੱਚ API Server, etcd, Scheduler ਅਤੇ Controller Manager ਹੁੰਦੇ ਹਨ।</p><p><b>Worker Node:</b> ਇੱਥੇ application workloads/PODs ਚਲਦੇ ਹਨ। Kubelet ਅਤੇ container runtime ਮਹੱਤਵਪੂਰਨ components ਹਨ।</p></div>
+<div class="card"><h2>🔄 Simple Request Flow</h2><p>User → Load Balancer/Ingress → Service → Pod → Container</p><p>Administrator → kubectl → API Server → Scheduler/Controllers → Worker Node</p></div>
+<div class="card"><h2>📦 ਪਹਿਲਾ Pod</h2><pre>kubectl run nginx --image=nginx
+kubectl get pods
+kubectl describe pod nginx
+kubectl delete pod nginx</pre><p>Pod Kubernetes ਵਿੱਚ deploy ਹੋਣ ਵਾਲੀ ਸਭ ਤੋਂ basic workload unit ਹੈ। ਆਮ ਤੌਰ ਤੇ ਇੱਕ Pod ਵਿੱਚ ਇੱਕ ਜਾਂ ਵੱਧ closely-related containers ਹੁੰਦੇ ਹਨ।</p></div>
+<div class="card"><h2>📚 Lessons</h2><ol><li>Kubernetes Introduction</li><li>Cluster Architecture</li><li>Control Plane Components</li><li>Worker Node Components</li><li>Pods</li><li>Deployments & ReplicaSets</li><li>Services</li><li>Ingress</li><li>ConfigMaps & Secrets</li><li>Storage: PV & PVC</li><li>StatefulSet & DaemonSet</li><li>Jobs & CronJobs</li><li>Networking & DNS</li><li>RBAC & Security</li><li>Scheduling</li><li>Autoscaling</li><li>Health Checks</li><li>Troubleshooting</li></ol></div>
+<div class="card"><h2>🎯 ਸਿੱਖਣ ਦਾ ਤਰੀਕਾ</h2><p>ਹਰ topic ਲਈ ਪਹਿਲਾਂ concept ਸਮਝੋ, ਫਿਰ YAML ਪੜ੍ਹੋ, ਉਸ ਤੋਂ ਬਾਅਦ `kubectl` ਨਾਲ ਆਪਣੇ cluster ਉੱਤੇ practice ਕਰੋ।</p></div>
+</main><footer>Kubernetes in Punjabi • Learn • Practice • Build</footer>
+</body></html>
