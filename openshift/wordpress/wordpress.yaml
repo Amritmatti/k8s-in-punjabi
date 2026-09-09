@@ -35,9 +35,9 @@ spec:
     spec:
       containers:
         - name: wordpress
-          image: docker.io/library/wordpress:latest
+          image: image-registry.openshift-image-registry.svc:5000/amritmatti-dev/wordpress-openshift:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           env:
             - name: WORDPRESS_DB_HOST
               value: mariadb:3306
@@ -69,4 +69,4 @@ spec:
   ports:
     - name: http
       port: 8080
-      targetPort: 80
+      targetPort: 8080
