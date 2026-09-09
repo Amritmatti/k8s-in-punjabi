@@ -6,7 +6,9 @@ Hands-on lab for deploying **WordPress + MariaDB** on Red Hat OpenShift Sandbox 
 
 ## Architecture
 
-Internet -> OpenShift Route -> WordPress Service -> WordPress Pod -> MariaDB Service -> MariaDB Pod
+Internet -> OpenShift Route -> WordPress Service :8080 -> WordPress Pod / Apache :8080 -> MariaDB Service :3306 -> MariaDB Pod
+
+The WordPress container is built specifically for OpenShift's non-root security model. The standard WordPress Apache configuration listens on port 80, which can fail under the `restricted-v2` SCC because the container runs with a namespace-assigned non-root UID. This lab changes Apache to port 8080 instead. OpenShift Route still exposes the application externally over HTTPS.
 
 Both applications use PersistentVolumeClaims (PVCs).
 
@@ -52,7 +54,31 @@ oc get pvc
 
 Wait for the MariaDB pod to become `Running` and `Ready`.
 
-## 4. Deploy WordPress
+## 4. Build the OpenShift-compatible WordPress image
+
+The standard WordPress image starts Apache on port 80. OpenShift Sandbox normally runs workloads with the `restricted-v2` SCC and a namespace-assigned non-root UID, so this lab builds a small derived image that changes Apache to port 8080.
+
+Apply the ImageStream and BuildConfig:
+
+```bash
+oc apply -f wordpress-build.yaml
+```
+
+Start the build:
+
+```bash
+oc start-build wordpress-openshift --follow
+```
+
+Verify the build and image:
+
+```bash
+oc get builds
+oc get imagestream
+oc get imagestreamtag wordpress-openshift:latest
+```
+
+## 5. Deploy WordPress
 
 ```bash
 oc apply -f wordpress.yaml
@@ -67,7 +93,9 @@ oc get svc
 oc get pvc
 ```
 
-## 5. Expose WordPress publicly
+The WordPress pod should become `1/1 Running`.
+
+## 6. Expose WordPress publicly
 
 Create an OpenShift Route:
 
@@ -89,9 +117,9 @@ oc get route wordpress -o jsonpath='{.spec.host}{"\\n"}'
 
 Open the returned hostname in your browser using HTTPS.
 
-The Route uses edge TLS termination and redirects HTTP to HTTPS.
+The Route uses edge TLS termination and redirects HTTP to HTTPS. The external connection uses HTTPS/443 while the Route sends traffic internally to the WordPress Service on port 8080.
 
-## 6. Finish WordPress setup
+## 7. Finish WordPress setup
 
 Open the public URL and complete the WordPress setup.
 
@@ -102,7 +130,7 @@ Set:
 - Strong administrator password
 - Administrator email
 
-## 7. Verify
+## 8. Verify
 
 ```bash
 oc get pods
@@ -126,6 +154,26 @@ oc get events --sort-by=.lastTimestamp
 ```
 
 ## Troubleshooting
+
+### WordPress Apache reports `Permission denied` on port 80
+
+This means the standard WordPress image is trying to bind Apache to privileged port 80 while running under the OpenShift non-root security model.
+
+Rebuild the OpenShift-specific image:
+
+```bash
+oc start-build wordpress-openshift --follow
+oc rollout restart deployment/wordpress
+oc rollout status deployment/wordpress
+```
+
+Verify the container is using port 8080:
+
+```bash
+oc get pod -l app=wordpress -o yaml | grep -A3 containerPort
+```
+
+Do **not** grant the application the `privileged` SCC just to make Apache use port 80. Using an unprivileged application port is the preferred approach for this lab.
 
 ### PVC is Pending
 
@@ -167,6 +215,7 @@ The Route must point to the WordPress Service, and the Service must have ready e
 ```bash
 oc delete -f route.yaml
 oc delete -f wordpress.yaml
+oc delete -f wordpress-build.yaml
 oc delete -f mariadb.yaml
 oc delete secret wordpress-db-secret
 ```
@@ -188,7 +237,10 @@ oc get pvc
 - PersistentVolumeClaims
 - Environment variables
 - Labels and selectors
+- ImageStreams
+- BuildConfigs
 - OpenShift Routes
+- Non-root container operation
 - Public application exposure
 - Application-to-database communication
 - Basic OpenShift troubleshooting
@@ -201,7 +253,6 @@ oc get pvc
 4. NetworkPolicy
 5. TLS certificates
 6. HPA
-7. ImageStreams
-8. OpenShift Pipelines
-9. GitHub Actions CI/CD
-10. Production WordPress architecture
+7. OpenShift Pipelines
+8. GitHub Actions CI/CD
+9. Production WordPress architecture
