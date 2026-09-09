@@ -31,15 +31,16 @@ Never commit your token, kubeconfig, or real passwords to Git.
 
 ## 2. Create database credentials
 
-Create the MariaDB secret from the CLI:
+Create one secret containing the variables required by MariaDB and WordPress:
 
 ```bash
-oc create secret generic mariadb-secret \
-  --from-literal=mariadb-root-password='<CHOOSE_A_STRONG_ROOT_PASSWORD>' \
-  --from-literal=mariadb-password='<CHOOSE_A_STRONG_DATABASE_PASSWORD>'
+oc create secret generic wordpress-db-secret \
+  --from-literal=MARIADB_ROOT_PASSWORD='<CHOOSE_A_STRONG_ROOT_PASSWORD>' \
+  --from-literal=MARIADB_PASSWORD='<CHOOSE_A_STRONG_DATABASE_PASSWORD>' \
+  --from-literal=WORDPRESS_DATABASE_PASSWORD='<SAME_DATABASE_PASSWORD>'
 ```
 
-The password used for `mariadb-password` must be the same password used by WordPress.
+The value of `MARIADB_PASSWORD` and `WORDPRESS_DATABASE_PASSWORD` must be identical.
 
 ## 3. Deploy MariaDB
 
@@ -76,7 +77,9 @@ oc apply -f route.yaml
 
 Get the public hostname:
 
-```oc get route wordpress```
+```bash
+oc get route wordpress
+```
 
 Or:
 
@@ -165,7 +168,7 @@ The Route must point to the WordPress Service, and the Service must have ready e
 oc delete -f route.yaml
 oc delete -f wordpress.yaml
 oc delete -f mariadb.yaml
-oc delete secret mariadb-secret
+oc delete secret wordpress-db-secret
 ```
 
 Verify:
