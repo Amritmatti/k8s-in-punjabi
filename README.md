@@ -39,3 +39,21 @@
 ## 📚 Official Reference
 
 https://kubernetes.io/docs/
+
+
+## OpenShift Labs
+
+### Deploy WordPress on OpenShift Sandbox
+
+A simple practical lab covering:
+
+- MariaDB deployment
+- WordPress deployment
+- PersistentVolumeClaims
+- Secrets
+- Services
+- OpenShift Route
+- Public HTTPS access
+- Troubleshooting
+
+👉 [OpenShift WordPress Lab](openshift/wordpress/README.md)
