@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Reel Studio</title>
+  <style>
+    body{font-family:system-ui;margin:0;background:#111;color:#eee}main{max-width:760px;margin:40px auto;padding:24px}input,textarea,select,button{width:100%;box-sizing:border-box;margin:8px 0;padding:12px;border-radius:8px;border:1px solid #444;background:#1c1c1c;color:#fff}button{cursor:pointer;font-weight:700}video{width:100%;margin-top:20px;max-height:70vh}.status{padding:12px;border-radius:8px;background:#1c1c1c;margin-top:12px}small{color:#aaa}
+  </style>
+</head>
+<body><main>
+  <h1>AI Reel Studio</h1>
+  <p>Image + text → smooth vertical 4K Reel + AI narration</p>
+  <form id="form">
+    <label>Image</label><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required>
+    <label>Script / narration</label><textarea name="text" rows="6" placeholder="Write the narration for your Reel..." required></textarea>
+    <label>Voice</label><select name="voice"><option value="en-US-AriaNeural">English - Aria</option><option value="en-US-GuyNeural">English - Guy</option><option value="hi-IN-SwaraNeural">Hindi - Swara</option><option value="hi-IN-MadhurNeural">Hindi - Madhur</option><option value="pa-IN-OjasNeural">Punjabi - Ojas</option></select>
+    <label>Duration (seconds)</label><input name="duration" type="number" min="3" max="60" value="10">
+    <button>Generate 4K Reel</button>
+  </form>
+  <div class="status" id="status">Ready</div><div id="result"></div>
+<script>
+const form=document.getElementById('form'),status=document.getElementById('status'),result=document.getElementById('result');
+form.onsubmit=async(e)=>{e.preventDefault();result.innerHTML='';status.textContent='Uploading...';const r=await fetch('/api/generate',{method:'POST',body:new FormData(form)});const j=await r.json();if(!r.ok){status.textContent=j.detail||'Error';return}status.textContent='Job queued: '+j.job_id;poll(j.job_id)};
+async function poll(id){const r=await fetch('/api/jobs/'+id);const j=await r.json();status.textContent='Status: '+j.status;if(j.status==='completed'){result.innerHTML='<video controls playsinline src="'+j.video+'"></video><p><a href="'+j.video+'">Download MP4</a></p>'}else if(j.status==='failed'){status.textContent='Failed: '+j.error}else setTimeout(()=>poll(id),2000)}
+</script></main></body></html>
