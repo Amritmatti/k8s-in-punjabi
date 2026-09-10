@@ -1,0 +1,11 @@
+services:
+  ai-video-generator:
+    build: .
+    container_name: ai-video-generator
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
